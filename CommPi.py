@@ -1,4 +1,5 @@
-import socket, sys, time;
+import string, socket, sys, time, serial;
 
-#Testcommit
-
+ser = serial.Serial('/dev/ttyACM0', 9600, 8, 'N', 1, timeout=1)
+while True:
+    print(ser.readLine())
