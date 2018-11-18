@@ -1,34 +1,59 @@
-import string, socket, sys, time, serial;
+import string, socket, sys, time, json#,serial
 
-ser = serial.Serial('/dev/ttyACM0', 9600, 8, 'N', 1, timeout=1)
+#ser = serial.Serial('/dev/ttyACM0', 9600, 8, 'N', 1, timeout=1)
 
-serverIP = "0.0.0.0"
-appIP = "0.0.0.0"
+serverIP = "localhost"
+appIP = "localhost"
 
-toServerPort = "0"
-fromServerPort = "0"
-toAppPort = "0"
-fromAppPort = "0"
+toServerPort = 5000
+fromServerPort = 5001
+toAppPort = 5002
+fromAppPort = 5003
 
 toServerAddress = (serverIP, toServerPort)
-fromServerAddress = (serverIP, fromServerPort)
+fromServerAddress = ("localhost", fromServerPort)
 toAppAddress = (appIP, toAppPort)
-fromAppAddress = (appIP, fromAppPort)
+fromAppAddress = ("localhost", fromAppPort)
 
 toServerSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 fromServerSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 toAppSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 fromAppSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-toServerSocket.bind(toServerAddress)
 fromServerSocket.bind(fromServerAddress)
-toAppSocket.bind(toAppAddress)
 fromAppSocket.bind(fromAppAddress)
+
+appNeeds = False
+
+def getCurrentState():
+    sensorData = [None, None, None]
+    sensorData[0] = 20#Read temp sensor
+    sensorData[1] = 2#Read level sensor
+    sensorData[2] = 0#Read OverFlow Sensor
+    return sensorData
+
+def sendCurrentState(toSend):
+    packet = {"data":0, "temp":toSend[0], "level":toSend[1], "overflow":toSend[2]}
+    toServerSocket.sendto(json.dumps(packet).encode(), toServerAddress)
 
 if __name__ == "__main__":
     while True:
-        fromServer = fromServerSocket.recvfrom(2048)
-        fromApp = fromAppSocket.recvfrom(2048)
-        print(ser.readLine())
+        print("waiting for instruction")
+        receivedData, add = fromServerSocket.recvfrom(2048)
+        fromServer = json.loads((receivedData).decode())
+
+        if(int(fromServer["data"]) == 5):
+            sendCurrentState(getCurrentState())
+            print("got current state, sending now")
+            appNeeds = True
+        elif(appNeeds):
+            #toAppSocket.sendall(fromServer)
+            print("received: " + str(fromServer["temp"]) + " " + str(fromServer["level"]) + " " + str(fromServer["overflow"]))
+            print("sending processed data to app now")
+            appNeeds = False
+
+
+
+
 
 
