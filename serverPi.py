@@ -4,13 +4,14 @@ import socket, time, sys, json, pymongo, datetime
 #myDataBase = myClient["mydatabase"]
 #myCollection = myDataBase["fishData"]
 
-toCommIP = "localhost"
+toCommIP = "169.254.0.2"
+thisIP = "169.254.187.140"
 
 toCommPort = 5001
 fromCommPort = 5000
 
 toCommAddress = (toCommIP, toCommPort)
-fromCommAddress = ('localhost', fromCommPort)
+fromCommAddress = (thisIP, fromCommPort)
 
 toCommSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 fromCommSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -26,16 +27,26 @@ def processData(packet):
     #loadData(packet)
 
     data = json.loads(packet) #data is a dict, keys: data, temp, level, overflow
-    temp = data['temp']
+    tempRead = data['temp']
     level = data['level']
     over = data['overflow']
+    instruction = data["data"]
+    print(str(tempRead) + " " + str(level) + " " + str(over))
 
-    # Any Conversions or units added here
-    temp -= 1
-    level -= 1
-    over += 1
+    tempRead = tempRead /1024 * 5000
+    temp = tempRead / 10
 
-    return {"data":6, "temp":temp, "level":level, "overflow":over}
+    over = over * 4 / 600
+    level = level * 4 / 600
+
+    if(level <= 2):
+        instruction = 2
+        if(over >= 1):
+            instruction = 3
+    elif(over >= 1):
+        instruction = 4
+
+    return {"data":instruction, "temp":temp, "level":level, "overflow":over}
 
 
 def loadData(packet):
@@ -43,6 +54,8 @@ def loadData(packet):
     #myDict = json.loads(packet)
     #myDict["data"] = datetime.datetime.now().strftime("%d%m%Y")
     #myCollection.insert_one(myDict)
+def getPastData(date):
+    a
 
 def getCurrentState():
     toSend = {"data":5}
@@ -59,6 +72,7 @@ if __name__ == "__main__":
             fromComm = json.loads(received.decode())
             print("Received current state: " + str(fromComm))
             outData = processData(received)
+            #loadData(outData)
             toCommSocket.sendto(json.dumps(outData).encode(), toCommAddress)
             print("Sending processed data now")
             updateCounter = 0
@@ -67,10 +81,10 @@ if __name__ == "__main__":
             print("Polling for app request")
             fromCommSocket.settimeout(appPollTime)
             appData, add2 = fromCommSocket.recvfrom(2048)
-
             fromCommApp = json.loads(appData.decode())
+
             print("Received Test Sending back now")
-            toCommSocket.sendto(appData, toCommAddress)
+            toCommSocket.sendto(getPastData(fromCommApp), toCommAddress)
         except:
             print("No app request was made")
         finally:

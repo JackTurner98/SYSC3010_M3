@@ -1,10 +1,10 @@
-import string, socket, sys, time, json, select#, serial
+import string, socket, sys, time, json, select, serial
 
-#ser = serial.Serial('/dev/ttyACM0', 9600, 8, 'N', 1, timeout=1)
+ser = serial.Serial('/dev/ttyACM0', 9600, 8, 'N', 1, timeout=1)
 
-thisIP = "localhost"
-serverIP = "localhost"
-appIP = "localhost"
+thisIP = "169.254.0.2"
+serverIP = "169.254.187.140"
+appIP = "169.254.187.140"
 
 
 toServerPort = 5000
@@ -29,7 +29,10 @@ fromSockets = [fromServerSocket, fromAppSocket]
 appNeeds = False
 
 def getCurrentState():
-    sensorData = {"data":0, "temp":5, "level":3, "overflow":19}#json.loads(ser.readline())
+
+    ser.write('1')
+    read = ser.read_until('}')
+    sensorData = json.loads(read)
     return sensorData
 
 def sendCurrentState(toSend):
@@ -41,7 +44,7 @@ def sendProcessedData(toSend):
 
 if __name__ == "__main__":
     while True:
-        print("waiting for instruction")
+        print("\nwaiting for instruction")
         socketCheck,_,_ = select.select(fromSockets, [], [])
         for socket in socketCheck:
             receivedData, add = socket.recvfrom(2048)
@@ -53,13 +56,11 @@ if __name__ == "__main__":
                 receivedProcessedData, addSecond = fromServerSocket.recvfrom(2048)
                 fromServerSecond = json.loads(receivedProcessedData.decode())
                 print("Received processed Data: " + str(fromServerSecond))
-
-                if(int(fromServerSecond["data"]) == 6): #Instruction: Received processed data, send to app
+                instr = int(fromServerSecond["data"])
+                if( instr == 6 or instr == 2 or instr == 3 or instr == 4): #Instruction: Received processed data, send to app
                     sendProcessedData(receivedProcessedData)
                     print("sending processed data to app now")
-                else:
-                    print("Sent raw data but received bad instruction from server after processing")
-                    break
+
 
             elif(int(fromData["data"]) == 8): #Instruction: Received target date, send to server for query
                 toServerSocket.sendto(receivedData, toServerAddress)
