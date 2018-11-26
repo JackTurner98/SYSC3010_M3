@@ -1,30 +1,52 @@
-// ArduinoJson - Version: 5.13.3
+#include <Time.h>
+#include <TimeLib.h>
 #include <ArduinoJson.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-int overflowPin = 0;
-int levelPin = 1;
-int tempPin = 2;
+const int overflowPin = 0;
+const int levelPin = 1;
+const int tempPin = 2;
+const int FEEDERPIN = 3;
+boolean feedTime = false;
+boolean pushData = false;
+double overFlow, waterLevel, temperature = 0;
 
 void setup(){
+  pinMode(A3, OUTPUT);
 	Serial.begin(9600);
 }
-
+void feedCycle(){
+  digitalWrite(A3, HIGH);
+  for(int i = 0; i < 16; i++){
+    delay(1000);
+  }
+  digitalWrite(A3, LOW);
+}
 void loop(){
-  if (Serial.read() == '1'){
-  	float overFlowVal = analogRead(overflowPin); //overflow
-   
-  	float waterLevelVal = analogRead(levelPin); //level
-   
-  	float tempVal = analogRead(tempPin); //temp
-     
-  	DynamicJsonBuffer jBuffer;
-  	JsonObject& root = jBuffer.createObject();
-  	
-  	root["data"] = 1;
-  	root["temp"] = tempVal;
-  	root["level"] = waterLevelVal;
-  	root["overflow"] = overFlowVal;
   
-    root.prettyPrintTo(Serial);
+  while(true){
+
+    char code = Serial.read();
+    if(code == 'f'){
+      feedCycle();
+    }
+
+    if(code == 'p'){
+   
+    	overFlow = analogRead(overflowPin); //overflow
+    	waterLevel = analogRead(levelPin); //level
+    	temperature = analogRead(tempPin); //temp
+     
+    	DynamicJsonBuffer jBuffer;
+    	JsonObject& root = jBuffer.createObject();
+    	
+    	root["data"] = 1;
+    	root["temp"] = temperature;
+    	root["level"] = waterLevel;
+    	root["overflow"] = overFlow;
+    
+        root.prettyPrintTo(Serial);
+    }
   }
 }
