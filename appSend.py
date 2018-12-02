@@ -19,19 +19,8 @@ fromCommSocket.bind(fromCommAddress)
 
 
 if __name__ == "__main__":
-    #print("Sending Test packet")
     toSend = {"data":8, "date":(2018, 12, 2)}
-    #toCommSocket.sendto(json.dumps(toSend).encode(), toCommAddress)
-    while True:
-        received, add = fromCommSocket.recvfrom(2048)
-        fromData = json.loads((received).decode())
-
-        if(fromData["data"] == 2):
-            print("ALERT LOW WATER LEVEL")
-        elif(fromData["data"] == 3):
-            print("ALERT LOW WATER LEVEL AND OVERFLOW")
-        elif(fromData["data"] == 4):
-            print("ALERT OVERFLOW")
-        else:
-            print("Everything Normal")
-        print(str(fromData))
+    toCommSocket.sendto(json.dumps(toSend).encode(), toCommAddress)
+    received, add = fromCommSocket.recvfrom(2048)
+    fromData = json.loads(received.decode())
+    print(str(fromData))
