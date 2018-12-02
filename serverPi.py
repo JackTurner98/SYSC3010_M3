@@ -1,4 +1,6 @@
 import socket, time, sys, json, pymongo, datetime
+from pymongo import *
+import unittest
 
 #myClient = pymongo.MongoClient("mongodb://localhost:27017/")
 #myDataBase = myClient["mydatabase"]
@@ -16,8 +18,12 @@ fromCommAddress = (thisIP, fromCommPort)
 toCommSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 fromCommSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-
 fromCommSocket.bind(fromCommAddress)
+
+#Establish connection to database
+client = MongoClient('mongodb://Sahil:Sahil_742995@ds139844.mlab.com:39844/aqua')
+db = client.aqua
+posts = db.posts
 
 updateDelay = 5
 updateCounter = 500
@@ -46,6 +52,7 @@ def processData(packet):
     elif(over >= 1):
         instruction = 4
 
+    update(temp,level,over)
     return {"data":instruction, "temp":temp, "level":level, "overflow":over}
 
 
@@ -90,39 +97,39 @@ if __name__ == "__main__":
         finally:
             updateCounter += updateDelay
 
-from pymongo import *
-import unittest
-
-client = MongoClient('mongodb://Sahil:Sahil_742995@ds139844.mlab.com:39844/aqua')
-db = client.aqua
-posts = db.posts
-
+def update(temp,level,over):
     
-postTest_data = {
-    'Temperature' : 23,
-    'waterLevel' : 5
-}
+    postTest_data = {
+        'Temperature' : temp,
+        'waterLevel' : level,
+        'overflowLevel' : over
+    }
+    if(test(temp, level, over))
+        store(postTest_data)
+                                                                
+def test(temperature, waterLvl, ovrflowLvl):
+    assert(waterLvl > 0),"waterLevel cant be negative"
+    assert(temperature > 0),"temperature cant be negative"
+    assert(ovrflowLvl > 0),"temperature cant be negative"
 
-temp = postTest_data.get("Temperature")
-waterLvl = postTest_data.get("waterLevel")
-                                 
-print(temp)
-print(waterLvl)                                 
+    assert(waterLvl < 7), "hardware error, sensor range 0-4 cm"
+    assert(temperature < 40),"hardware error,sensor range 0-40celcius"
+    assert(ovrflowLvl< 7), "hardware error, sensor range 0-4 cm"
 
-assert(waterLvl > 0),"waterLevel cant be negative"
-assert(temp > 0),"temperature cant be negative"
-assert(waterLvl < 7), "hardware error, sensor range 0-4 cm"
-assert(temp < 40),"hardware error,sensor range 0-40celcius"
-assert(waterLvl != " "),"cannot insert null value"
-assert(temp != " "), "cannot insert null value"
+    assert(waterLvl != " "),"cannot insert null value"
+    assert(temperature != " "), "cannot insert null value"
+    assert(ovrflowLvl!= " "), "cannot insert null value"
+    print("Data is checked and is okay to store")
+    return true
 
-result = posts.insert_one(postTest_data)
-print('One post: {0}'.format(result.inserted_id))
-retrived_posts = db.posts
-for document in retrived_posts.find():
-    print(document)
-print("data was stored without any errors")
+def store(data):
+    result = posts.insert_one(data)
+    print('One post: {0}'.format(result.inserted_id))
+    retrived_posts = db.posts
+    for document in retrived_posts.find():
+        print(document)
+    print("data was stored without any errors")
 
-++++++++++
+
 
 
