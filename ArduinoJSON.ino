@@ -4,6 +4,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// SYSC 3010 Automated Aquarium Monitoring Arduino
+// Version: December 2nd 2018
+// Author: John Turner
+
 const int overflowPin = 0;
 const int levelPin = 1;
 const int tempPin = 2;
