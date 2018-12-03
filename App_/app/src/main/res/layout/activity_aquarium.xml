@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AquariumActivity"
+    android:background="@drawable/fish"
+    >
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="80dp"
+        android:onClick="updateData"
+        android:text="Update data"
+        tools:layout_editor_absoluteX="148dp"
+        tools:layout_editor_absoluteY="379dp" />
+
+    <TextView
+        android:id="@+id/temperatureText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/button2"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="-28dp"
+        android:layout_marginTop="99dp"
+        android:text="Temperature: "
+        android:textColor="#FFFFFF"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="32dp" />
+
+    <TextView
+        android:id="@+id/waterLevelText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/button2"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="-28dp"
+        android:layout_marginTop="124dp"
+        android:text="Water Level: "
+        android:textColor="#FFFFFF"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        tools:layout_editor_absoluteX="28dp"
+        tools:layout_editor_absoluteY="61dp" />
+
+    <TextView
+        android:id="@+id/overflowLevelText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/button2"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="-28dp"
+        android:layout_marginTop="150dp"
+        android:text="Overflow Level: "
+        android:textColor="#FFFFFF"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        tools:layout_editor_absoluteX="28dp"
+        tools:layout_editor_absoluteY="61dp" />
+
+    <TextView
+        android:id="@+id/ovrflowerrText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/button2"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="-118dp"
+        android:layout_marginTop="200dp"
+        android:gravity="center"
+        android:text=""
+        android:background="#8000"
+        android:textColor="#FFAAAA"
+        android:textSize="16dp"
+        android:textStyle="italic"
+        tools:layout_editor_absoluteX="28dp"
+        tools:layout_editor_absoluteY="61dp" />
+
+    <TextView
+        android:id="@+id/temperrText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/button2"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="-115dp"
+        android:layout_marginTop="255dp"
+        android:gravity="center"
+        android:text=""
+        android:background="#8000"
+        android:textColor="#FFAAAA"
+        android:textSize="16dp"
+        android:textStyle="italic"
+        tools:layout_editor_absoluteX="28dp"
+        tools:layout_editor_absoluteY="61dp" />
+
+    <TextView
+        android:id="@+id/waterlvlerrText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/button2"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="-115dp"
+        android:layout_marginTop="307dp"
+        android:gravity="center"
+        android:text=""
+        android:background="#8000"
+        android:textColor="#FFAAAA"
+        android:textSize="16dp"
+        android:textStyle="italic"
+        tools:layout_editor_absoluteX="28dp"
+        tools:layout_editor_absoluteY="61dp" />
+
+    <TextView
+        android:id="@+id/allGoodText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/button2"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="-110dp"
+        android:layout_marginTop="307dp"
+        android:background="#8000"
+        android:gravity="center"
+        android:text=""
+        android:textColor="#a4c639"
+        android:textSize="16dp"
+        android:textStyle="italic"
+        tools:layout_editor_absoluteX="28dp"
+        tools:layout_editor_absoluteY="61dp" />
+</RelativeLayout>
