@@ -1,0 +1,81 @@
+//Gabriele Sarwar
+// arduino code that is uploaded on arduino to read the 2 water level sensors and the temp sensors
+
+int val3;
+int tempPin = 2;
+
+void setup()
+{
+  Serial.begin(9600);
+  
+}
+
+void loop()
+{
+  
+  int val = analogRead(A0);
+  float cm = (val*4.0)/600.0;
+  Serial.println(cm);
+  delay(1000);
+
+  int val2 = analogRead(A1);
+  float cm2 = (val2*4.0)/600.0;
+  Serial.println(cm2);
+  delay(1000);
+  
+  val3 = analogRead(tempPin);
+  float mv = ( val3/1024.0)*5000; 
+  float cel = mv/10;
+  float farh = (cel*9)/5 + 32;
+  
+  Serial.print("TEMPRATURE = ");
+  Serial.print(cel);
+  Serial.print("*C");
+  Serial.println();
+  delay(1000);
+
+
+}
+
+//Python code that reads sensors via usb
+
+#!/usr/bin/python
+//code to read from serial line 
+import serial, string, time
+
+output = " "
+ser = serial.Serial('/dev/ttyACM0', 9600, 8, 'N', 1, timeout=1)
+
+while True:
+    print "----"
+    while output != "":
+    output = ser.readline()
+    print output
+    output = " "
+-------------------------------------------------------------------------
+//code to test reading inputs
+
+#!/usr/bin/python
+
+import serial, string, time
+
+ser = serial.Serial('/dev/ttyACM0', 9600, 8, 'N', 1, timeout=1)
+
+while True:
+    Assert ser.readline() = true: // asserts a value is read, other wise it would return an error.
+    
+------------------------------------------------------------------------------
+//code to test conversion
+
+#!/usr/bin/python
+
+import serial, string, time
+
+ser = serial.Serial('/dev/ttyACM0', 9600, 8, 'N', 1, timeout=1)
+
+while True:
+    if ser.readline().decode('ascii') < 100: //usually the values from water sensors are greater then 100
+//so if we touch the sensors and this is still printed out it means the values are being converted into cm
+//which will be from 0-5cm according to the conversion method. For the temp sensors, the room temp is always in
+//degrees which will always be less then 100
+	print("values are being converted")
